@@ -24,7 +24,5 @@ Desenvolver uma API capaz de:
 📊 Logs de requisições
 ---
 ## Link
-
- Local URL: http://localhost:8501
- Network URL: http://1http://localhost:8501
+https://apicodecaoa.streamlit.app/
 ---
