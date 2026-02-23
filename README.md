@@ -1,6 +1,6 @@
 # 🔎 API de Conferência de Códigos
 
-Este repositório contém uma API REST desenvolvida para validação, verificação e conferência automática de códigos, permitindo integração com sistemas externos de forma rápida e segura.
+Este repositório contém uma API  desenvolvida para validação, verificação e conferência automática de códigos, permitindo integração com sistemas externos de forma rápida e segura.
 
 ## 🎯 Objetivo
 
@@ -9,9 +9,8 @@ Desenvolver uma API capaz de:
 - ✅ Validar códigos automaticamente
 - ✅ Conferir autenticidade e formato
 - ✅ Detectar inconsistências
-- ✅ Retornar status padronizado via JSON
+- ✅ Retornar status padronizado via CSV OU XLSX
 - ✅ Integrar com sistemas web, mobile ou ERP
----
 
 ## 🧩 Funcionalidades
 
@@ -22,7 +21,5 @@ Desenvolver uma API capaz de:
 🔐 Verificação de integridade
 
 📊 Logs de requisições
----
 ## Link
 https://apicodecaoa.streamlit.app/
----
