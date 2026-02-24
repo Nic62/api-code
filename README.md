@@ -22,4 +22,4 @@ Desenvolver uma API capaz de:
 
 📊 Logs de requisições
 ## Link
-https://apicodecaoa.streamlit.app/
+https://api-code-caoa.streamlit.app/
