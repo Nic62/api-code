@@ -12,7 +12,7 @@ col1, col2 = st.columns([6,1])
 
 with col2:
     st.image("logo.png", width=120)
-    st.logo("logo.png")
+st.logo("logo.png")
 #paginas
 st.page_link("site.py", label="Home", icon="📊")
 st.page_link("pages/sitepesquisa.py", label="Pesquisa", icon="🔎")
