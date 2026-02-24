@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 #df
-df=pd.read_csv("database_log_todo.csv")
+df=pd.read_csv("database_log_todo.csv"sep=";",decimal=",",thousands=".",encoding="latin1)
 st.logo("logo.png")
 #logo
 col1, col2 = st.columns([6,1])
@@ -60,11 +60,6 @@ col4.metric("Consumo Total", int(df_filtrado["CONSUMO"].sum()))
 
 st.divider()
 
-# =========================
-# GRÁFICOS
-# =========================
-
-col1, col2 = st.columns(2)
 
 # Consumo por Modelo
 consumo_modelo = (
