@@ -2,6 +2,12 @@ import streamlit as st
 import pandas as pd
 #df
 df=pd.read_csv("database_log_todo.csv")
+df = df[df["CLASSIF"] != "OBSOLETO"]
+df["CLASSIF"] = (
+    df["CLASSIF"]
+    .str.replace("_", " ", regex=False)
+    .str.replace("+", "/", regex=False)
+)
 #logo
 col1, col2 = st.columns([6,1])
 
@@ -34,6 +40,8 @@ if termo:
             for _, item in resultados.iterrows():
                 with st.container(border=True):
                     st.subheader(item["CODIGO"])
+                    st.subheader(item["MODELO"])
+                    st.subheader(item["DESCRICAO"])
                     st.subheader(item["ESTACAO"])
                     st.write(item["SUB_GRUPO_1"])
                     st.write(item["SUB_GRUPO_2"])
