@@ -1,9 +1,7 @@
 import streamlit as st
 import pandas as pd
-from PIL import Image
-from pyzbar.pyzbar import decode
 
-# df
+# dataframe
 @st.cache_data
 def carregar_dados():
     return pd.read_csv(
@@ -15,6 +13,7 @@ def carregar_dados():
 
 df = carregar_dados()
 
+# filtro
 df = df[df["CLASSIF"] != "OBSOLETO"]
 
 df["CLASSIF"] = (
@@ -39,42 +38,23 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# pesquisa manual
+# pesquisa
 col1, col2, col3 = st.columns([1,2,1])
 
 with col2:
-    termo = st.text_input("Digite ou escaneie o código")
 
-# upload QR/barcode
-uploaded_file = st.file_uploader(
-    "Envie imagem do QR Code ou código de barras",
-    type=["png", "jpg", "jpeg"]
-)
+    termo = st.text_input(
+        "Digite ou escaneie o código",
+        placeholder="Use leitor de código de barras"
+    )
 
-# leitura QR/barcode
-if uploaded_file is not None:
-
-    image = Image.open(uploaded_file)
-
-    decoded_objects = decode(image)
-
-    if decoded_objects:
-
-        termo = decoded_objects[0].data.decode("utf-8")
-
-        st.success(f"Código detectado: {termo}")
-
-    else:
-        st.error("Nenhum QR Code ou código de barras encontrado.")
-
-# resposta
+# resultado
 if termo:
 
     resultados = df[
         df["CODIGO"]
         .astype(str)
-        .str.lower()
-        .str.contains(termo.lower())
+        .str.contains(termo, case=False, na=False)
     ]
 
     st.markdown("<br>", unsafe_allow_html=True)
