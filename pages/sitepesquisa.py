@@ -16,7 +16,6 @@ def carregar_dados():
 
 df = carregar_dados()
 
-# filtro
 df = df[df["CLASSIF"] != "OBSOLETO"]
 
 df["CLASSIF"] = (
@@ -50,7 +49,13 @@ st.markdown(
 )
 
 # ======================
-# INPUT
+# SESSION STATE (ESSENCIAL)
+# ======================
+if "codigo" not in st.session_state:
+    st.session_state.codigo = ""
+
+# ======================
+# INPUT (ÚNICA FONTE)
 # ======================
 termo = st.text_input(
     "Digite ou escaneie o código",
@@ -61,7 +66,7 @@ termo = st.text_input(
 abrir_scanner = st.button("📷 Ler QR Code")
 
 # ======================
-# SCANNER QR CODE (SEGURO)
+# SCANNER (APENAS VISUAL)
 # ======================
 if abrir_scanner:
 
@@ -73,14 +78,13 @@ if abrir_scanner:
     <script>
 
     function onScanSuccess(decodedText) {
+        // atualiza input direto no DOM (FUNCIONA)
+        const input = window.parent.document.querySelector('input');
 
-        // envia valor para Streamlit sem clicar em botões
-        window.parent.postMessage({
-            isStreamlitMessage: true,
-            type: "streamlit:setComponentValue",
-            value: decodedText
-        }, "*");
-
+        if (input) {
+            input.value = decodedText;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+        }
     }
 
     let scanner = new Html5QrcodeScanner("reader", {
@@ -99,8 +103,10 @@ if abrir_scanner:
     components.html(scanner_html, height=400)
 
 # ======================
-# BUSCA
+# BUSCA (AGORA FUNCIONA)
 # ======================
+termo = st.session_state.codigo
+
 if termo:
 
     resultados = df[
@@ -108,8 +114,6 @@ if termo:
         .astype(str)
         .str.contains(termo, case=False, na=False)
     ]
-
-    st.markdown("<br>", unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1, 2, 1])
 
