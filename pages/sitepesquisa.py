@@ -16,7 +16,6 @@ def carregar_dados():
 
 df = carregar_dados()
 
-# filtro
 df = df[df["CLASSIF"] != "OBSOLETO"]
 
 df["CLASSIF"] = (
@@ -26,6 +25,15 @@ df["CLASSIF"] = (
     .str.replace("_", " ", regex=False)
     .str.replace("+", "/", regex=False)
 )
+
+# ======================
+# STATE
+# ======================
+if "codigo" not in st.session_state:
+    st.session_state.codigo = ""
+
+if "scanner" not in st.session_state:
+    st.session_state.scanner = False
 
 # ======================
 # LOGO
@@ -50,30 +58,27 @@ st.markdown(
 )
 
 # ======================
-# SESSION STATE
-# ======================
-if "codigo" not in st.session_state:
-    st.session_state.codigo = ""
-
-# ======================
-# INPUT + BOTÃO
+# INPUT
 # ======================
 col1, col2, col3 = st.columns([1, 2, 1])
 
 with col2:
+
     st.text_input(
         "Digite ou escaneie o código",
         key="codigo"
     )
 
     pesquisar = st.button("🔎 Pesquisar")
-
     abrir_scanner = st.button("📷 Ler QR Code")
 
+    if abrir_scanner:
+        st.session_state.scanner = True
+
 # ======================
-# SCANNER QR CODE (CÂMERA TRASEIRA)
+# SCANNER (FECHA AUTOMATICAMENTE)
 # ======================
-if abrir_scanner:
+if st.session_state.scanner:
 
     scanner_html = """
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -90,6 +95,13 @@ if abrir_scanner:
             input.value = decodedText;
             input.dispatchEvent(new Event('input', { bubbles: true }));
         }
+
+        // fecha scanner escondendo ele
+        const reader = document.getElementById("reader");
+        if (reader) {
+            reader.innerHTML = "<b>✔ Código lido</b>";
+        }
+
     }
 
     let scanner = new Html5QrcodeScanner("reader", {
