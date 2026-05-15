@@ -3,7 +3,7 @@ import pandas as pd
 #df
 @st.cache_data
 def carregar_dados():
-    return pd.read_csv("database_log_todo.csv",encoding="latin1", sep=",")
+    return pd.read_csv("database_log_todo.csv")
 
 df = carregar_dados()
 
