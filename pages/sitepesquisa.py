@@ -1,7 +1,12 @@
 import streamlit as st
 import pandas as pd
 #df
-df=pd.read_csv("database_log_todo.csv")
+@st.cache_data
+def carregar_dados():
+    return pd.read_csv("database_log_todo.csv")
+
+df = carregar_dados()
+
 df = df[df["CLASSIF"] != "OBSOLETO"]
 df["CLASSIF"] = (
     df["CLASSIF"]
