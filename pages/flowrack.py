@@ -28,3 +28,4 @@ df_fl_tratado["MODELO"] = df_fl_tratado.apply(
     else None,
     axis=1
 )
+st.dataframe(df_fl_tratado)
