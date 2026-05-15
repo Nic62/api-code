@@ -32,30 +32,21 @@ df["CLASSIF"] = (
 if "codigo" not in st.session_state:
     st.session_state.codigo = ""
 
-if "scanner" not in st.session_state:
-    st.session_state.scanner = False
-
 # ======================
-# LOGO
+# LOGO + MENU
 # ======================
 col1, col2 = st.columns([6, 1])
 
 with col2:
     st.image("logo.png", width=120)
 
-# ======================
-# MENU
-# ======================
 st.page_link("site.py", label="Home", icon="📊")
 st.page_link("pages/sitepesquisa.py", label="Pesquisa", icon="🔎")
 
 # ======================
 # TÍTULO
 # ======================
-st.markdown(
-    "<h1 style='text-align:center;'>PESQUISA</h1>",
-    unsafe_allow_html=True
-)
+st.markdown("<h1 style='text-align:center;'>PESQUISA</h1>", unsafe_allow_html=True)
 
 # ======================
 # INPUT
@@ -72,13 +63,10 @@ with col2:
     pesquisar = st.button("🔎 Pesquisar")
     abrir_scanner = st.button("📷 Ler QR Code")
 
-    if abrir_scanner:
-        st.session_state.scanner = True
-
 # ======================
-# SCANNER (FECHA AUTOMATICAMENTE)
+# SCANNER QR CODE
 # ======================
-if st.session_state.scanner:
+if abrir_scanner:
 
     scanner_html = """
     <script src="https://unpkg.com/html5-qrcode"></script>
@@ -96,12 +84,9 @@ if st.session_state.scanner:
             input.dispatchEvent(new Event('input', { bubbles: true }));
         }
 
-        // fecha scanner escondendo ele
-        const reader = document.getElementById("reader");
-        if (reader) {
-            reader.innerHTML = "<b>✔ Código lido</b>";
-        }
-
+        // esconde scanner após leitura
+        document.getElementById("reader").innerHTML =
+            "<b>✔ Código capturado. Pode fechar.</b>";
     }
 
     let scanner = new Html5QrcodeScanner("reader", {
@@ -120,39 +105,41 @@ if st.session_state.scanner:
     components.html(scanner_html, height=400)
 
 # ======================
-# BUSCA
+# BUSCA (AGORA CORRETA)
 # ======================
-if pesquisar and st.session_state.codigo:
+termo = st.session_state.codigo
 
-    termo = st.session_state.codigo
+if pesquisar or termo:
 
-    resultados = df[
-        df["CODIGO"]
-        .astype(str)
-        .str.contains(termo, case=False, na=False)
-    ]
+    if termo:
 
-    st.markdown("<br>", unsafe_allow_html=True)
+        resultados = df[
+            df["CODIGO"]
+            .astype(str)
+            .str.contains(termo, case=False, na=False)
+        ]
 
-    col1, col2, col3 = st.columns([1, 2, 1])
+        st.markdown("<br>", unsafe_allow_html=True)
 
-    with col2:
+        col1, col2, col3 = st.columns([1, 2, 1])
 
-        if not resultados.empty:
+        with col2:
 
-            for _, item in resultados.iterrows():
+            if not resultados.empty:
 
-                with st.container(border=True):
+                for _, item in resultados.iterrows():
 
-                    st.subheader(item["CODIGO"])
-                    st.subheader(item["MODELO"])
-                    st.subheader(item["DESCRICAO"])
-                    st.subheader(item["ESTACAO"])
+                    with st.container(border=True):
 
-                    st.write(item["CONSUMO"])
-                    st.write(item["SUB_GRUPO_1"])
-                    st.write(item["SUB_GRUPO_2"])
-                    st.write(item["CLASSIF"])
+                        st.subheader(item["CODIGO"])
+                        st.subheader(item["MODELO"])
+                        st.subheader(item["DESCRICAO"])
+                        st.subheader(item["ESTACAO"])
 
-        else:
-            st.warning("Nenhum resultado encontrado.")
+                        st.write(item["CONSUMO"])
+                        st.write(item["SUB_GRUPO_1"])
+                        st.write(item["SUB_GRUPO_2"])
+                        st.write(item["CLASSIF"])
+
+            else:
+                st.warning("Nenhum resultado encontrado.")
