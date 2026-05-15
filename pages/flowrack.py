@@ -1,5 +1,8 @@
 import pandas as pd
-df_fl=pd.read_excel("FLOWRACKS CHANGAN - REV04.xlsm")
+df_fl = pd.read_excel(
+    "FLOWRACKS CHANGAN - REV04.xlsm",
+    engine="openpyxl"
+)
 df_geral=pd.read_csv("database_log_todo.csv",encoding="latin1",
     sep=";",
     on_bad_lines="skip")
