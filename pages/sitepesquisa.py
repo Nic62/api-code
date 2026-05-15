@@ -50,24 +50,15 @@ st.markdown(
 )
 
 # ======================
-# ESTADO
+# INPUT (IMPORTANTE: session_state)
 # ======================
-if "codigo" not in st.session_state:
-    st.session_state.codigo = ""
+termo = st.text_input(
+    "Digite ou escaneie o código",
+    key="codigo"
+)
 
-# ======================
-# INPUT MANUAL
-# ======================
-col1, col2, col3 = st.columns([1, 2, 1])
-
-with col2:
-    termo = st.text_input(
-        "Digite ou escaneie o código",
-        value=st.session_state.codigo,
-        placeholder="Código de barras ou QR Code"
-    )
-
-    abrir_scanner = st.button("📷 Ler QR Code")
+# botão scanner
+abrir_scanner = st.button("📷 Ler QR Code")
 
 # ======================
 # SCANNER (CÂMERA TRASEIRA)
@@ -82,11 +73,16 @@ if abrir_scanner:
     <script>
 
     function onScanSuccess(decodedText) {
+
         const input = window.parent.document.querySelector('input');
+
         if (input) {
             input.value = decodedText;
             input.dispatchEvent(new Event('input', { bubbles: true }));
         }
+
+        // força atualização no Streamlit
+        window.parent.document.querySelector('button').click();
     }
 
     let scanner = new Html5QrcodeScanner("reader", {
