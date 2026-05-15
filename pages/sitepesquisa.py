@@ -16,6 +16,7 @@ def carregar_dados():
 
 df = carregar_dados()
 
+# filtro
 df = df[df["CLASSIF"] != "OBSOLETO"]
 
 df["CLASSIF"] = (
@@ -55,22 +56,21 @@ if "codigo" not in st.session_state:
     st.session_state.codigo = ""
 
 # ======================
-# INPUT NORMAL
+# INPUT MANUAL
 # ======================
 col1, col2, col3 = st.columns([1, 2, 1])
 
 with col2:
     termo = st.text_input(
-        "Digite o código",
-        value=st.session_state.codigo
+        "Digite ou escaneie o código",
+        value=st.session_state.codigo,
+        placeholder="Código de barras ou QR Code"
     )
 
-# botão para abrir scanner
-with col2:
     abrir_scanner = st.button("📷 Ler QR Code")
 
 # ======================
-# SCANNER (JS)
+# SCANNER (CÂMERA TRASEIRA)
 # ======================
 if abrir_scanner:
 
@@ -80,20 +80,25 @@ if abrir_scanner:
     <div id="reader" style="width:300px;"></div>
 
     <script>
-        function onScanSuccess(decodedText) {
-            const input = window.parent.document.querySelector('input');
-            if (input) {
-                input.value = decodedText;
-                input.dispatchEvent(new Event('input', { bubbles: true }));
-            }
+
+    function onScanSuccess(decodedText) {
+        const input = window.parent.document.querySelector('input');
+        if (input) {
+            input.value = decodedText;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
         }
+    }
 
-        let scanner = new Html5QrcodeScanner(
-            "reader",
-            { fps: 10, qrbox: 250 }
-        );
+    let scanner = new Html5QrcodeScanner("reader", {
+        fps: 10,
+        qrbox: 250,
+        videoConstraints: {
+            facingMode: "environment"
+        }
+    });
 
-        scanner.render(onScanSuccess);
+    scanner.render(onScanSuccess);
+
     </script>
     """
 
