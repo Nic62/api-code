@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
-from streamlit_qrcode_scanner import qrcode_scanner
 
-# df
+# ======================
+# DADOS
+# ======================
 @st.cache_data
 def carregar_dados():
     return pd.read_csv(
@@ -14,25 +15,83 @@ def carregar_dados():
 
 df = carregar_dados()
 
-# título
-st.title("PESQUISA")
+# remove obsoletos com segurança
+df = df[df["CLASSIF"] != "OBSOLETO"]
 
-# 🔥 SCANNER DE CÂMERA
-codigo_qr = qrcode_scanner("Abra a câmera para escanear")
+df["CLASSIF"] = (
+    df["CLASSIF"]
+    .fillna("")
+    .astype(str)
+    .str.replace("_", " ", regex=False)
+    .str.replace("+", "/", regex=False)
+)
 
-# fallback manual
-termo = st.text_input("Ou digite o código")
+# ======================
+# LOGO
+# ======================
+col1, col2 = st.columns([6, 1])
 
-# se veio do QR
-if codigo_qr:
-    termo = codigo_qr
-    st.success(f"Escaneado: {termo}")
+with col2:
+    st.image("logo.png", width=120)
 
-# busca
+# ======================
+# MENU
+# ======================
+st.page_link("site.py", label="Home", icon="📊")
+st.page_link("pages/sitepesquisa.py", label="Pesquisa", icon="🔎")
+
+# ======================
+# TÍTULO
+# ======================
+st.markdown(
+    "<h1 style='text-align: center;'>PESQUISA</h1>",
+    unsafe_allow_html=True
+)
+
+# ======================
+# INPUT (scanner / manual)
+# ======================
+col1, col2, col3 = st.columns([1, 2, 1])
+
+with col2:
+    termo = st.text_input(
+        "Digite ou escaneie o código",
+        placeholder="Use leitor de código de barras ou QR Code"
+    )
+
+# ======================
+# RESULTADO
+# ======================
 if termo:
-    resultados = df[df["CODIGO"].astype(str).str.contains(termo, case=False, na=False)]
 
-    if not resultados.empty:
-        st.dataframe(resultados)
-    else:
-        st.warning("Nenhum resultado encontrado")
+    resultados = df[
+        df["CODIGO"]
+        .astype(str)
+        .str.lower()
+        .str.contains(termo.lower(), na=False)
+    ]
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns([1, 2, 1])
+
+    with col2:
+
+        if not resultados.empty:
+
+            for _, item in resultados.iterrows():
+
+                with st.container(border=True):
+
+                    st.subheader(item["CODIGO"])
+                    st.subheader(item["MODELO"])
+                    st.subheader(item["DESCRICAO"])
+                    st.subheader(item["ESTACAO"])
+
+                    st.write(item["CONSUMO"])
+                    st.write(item["SUB_GRUPO_1"])
+                    st.write(item["SUB_GRUPO_2"])
+                    st.write(item["CLASSIF"])
+
+        else:
+            st.warning("Nenhum resultado encontrado.")
