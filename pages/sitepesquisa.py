@@ -50,7 +50,7 @@ st.markdown(
 )
 
 # ======================
-# INPUT (IMPORTANTE: session_state)
+# INPUT
 # ======================
 termo = st.text_input(
     "Digite ou escaneie o código",
@@ -61,7 +61,7 @@ termo = st.text_input(
 abrir_scanner = st.button("📷 Ler QR Code")
 
 # ======================
-# SCANNER (CÂMERA TRASEIRA)
+# SCANNER QR CODE (SEGURO)
 # ======================
 if abrir_scanner:
 
@@ -74,15 +74,13 @@ if abrir_scanner:
 
     function onScanSuccess(decodedText) {
 
-        const input = window.parent.document.querySelector('input');
+        // envia valor para Streamlit sem clicar em botões
+        window.parent.postMessage({
+            isStreamlitMessage: true,
+            type: "streamlit:setComponentValue",
+            value: decodedText
+        }, "*");
 
-        if (input) {
-            input.value = decodedText;
-            input.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-
-        // força atualização no Streamlit
-        window.parent.document.querySelector('button').click();
     }
 
     let scanner = new Html5QrcodeScanner("reader", {
