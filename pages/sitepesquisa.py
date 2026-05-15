@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import streamlit.components.v1 as components
 
 # ======================
 # DADOS
@@ -15,7 +16,6 @@ def carregar_dados():
 
 df = carregar_dados()
 
-# remove obsoletos com segurança
 df = df[df["CLASSIF"] != "OBSOLETO"]
 
 df["CLASSIF"] = (
@@ -44,31 +44,70 @@ st.page_link("pages/sitepesquisa.py", label="Pesquisa", icon="🔎")
 # TÍTULO
 # ======================
 st.markdown(
-    "<h1 style='text-align: center;'>PESQUISA</h1>",
+    "<h1 style='text-align:center;'>PESQUISA</h1>",
     unsafe_allow_html=True
 )
 
 # ======================
-# INPUT (scanner / manual)
+# ESTADO
+# ======================
+if "codigo" not in st.session_state:
+    st.session_state.codigo = ""
+
+# ======================
+# INPUT NORMAL
 # ======================
 col1, col2, col3 = st.columns([1, 2, 1])
 
 with col2:
     termo = st.text_input(
-        "Digite ou escaneie o código",
-        placeholder="Use leitor de código de barras ou QR Code"
+        "Digite o código",
+        value=st.session_state.codigo
     )
 
+# botão para abrir scanner
+with col2:
+    abrir_scanner = st.button("📷 Ler QR Code")
+
 # ======================
-# RESULTADO
+# SCANNER (JS)
+# ======================
+if abrir_scanner:
+
+    scanner_html = """
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <div id="reader" style="width:300px;"></div>
+
+    <script>
+        function onScanSuccess(decodedText) {
+            const input = window.parent.document.querySelector('input');
+            if (input) {
+                input.value = decodedText;
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        }
+
+        let scanner = new Html5QrcodeScanner(
+            "reader",
+            { fps: 10, qrbox: 250 }
+        );
+
+        scanner.render(onScanSuccess);
+    </script>
+    """
+
+    components.html(scanner_html, height=400)
+
+# ======================
+# BUSCA
 # ======================
 if termo:
 
     resultados = df[
         df["CODIGO"]
         .astype(str)
-        .str.lower()
-        .str.contains(termo.lower(), na=False)
+        .str.contains(termo, case=False, na=False)
     ]
 
     st.markdown("<br>", unsafe_allow_html=True)
