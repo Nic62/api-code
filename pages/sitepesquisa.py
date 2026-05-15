@@ -17,7 +17,6 @@ with col2:
 #paginas
 st.page_link("site.py", label="Home", icon="📊")
 st.page_link("pages/sitepesquisa.py", label="Pesquisa", icon="🔎")
-st.page_link("pages/dashonline.py", label="Dashboard", icon="📈")
 #titulo
 st.markdown(
     "<h1 style='text-align: center;'>PESQUISA</h1>",
