@@ -1,33 +1,38 @@
 import streamlit as st
-import streamlit.components.v1 as components
+import pandas as pd
+from streamlit_qrcode_scanner import qrcode_scanner
 
-st.title("Scanner QR Code")
+# df
+@st.cache_data
+def carregar_dados():
+    return pd.read_csv(
+        "database_log_todo.csv",
+        encoding="latin1",
+        sep=";",
+        on_bad_lines="skip"
+    )
 
-codigo = st.text_input("Código recebido do scanner")
+df = carregar_dados()
 
-scanner_html = """
-<script src="https://unpkg.com/html5-qrcode"></script>
+# título
+st.title("PESQUISA")
 
-<div id="reader" style="width:300px;"></div>
+# 🔥 SCANNER DE CÂMERA
+codigo_qr = qrcode_scanner("Abra a câmera para escanear")
 
-<script>
-function onScanSuccess(decodedText) {
-    const input = window.parent.document.querySelector('input');
-    if (input) {
-        input.value = decodedText;
-        input.dispatchEvent(new Event('input', { bubbles: true }));
-    }
-}
+# fallback manual
+termo = st.text_input("Ou digite o código")
 
-let html5QrcodeScanner = new Html5QrcodeScanner(
-    "reader",
-    { fps: 10, qrbox: 250 }
-);
+# se veio do QR
+if codigo_qr:
+    termo = codigo_qr
+    st.success(f"Escaneado: {termo}")
 
-html5QrcodeScanner.render(onScanSuccess);
-</script>
-"""
+# busca
+if termo:
+    resultados = df[df["CODIGO"].astype(str).str.contains(termo, case=False, na=False)]
 
-components.html(scanner_html, height=400)
-
-st.write("Resultado:", codigo)
+    if not resultados.empty:
+        st.dataframe(resultados)
+    else:
+        st.warning("Nenhum resultado encontrado")
