@@ -1,7 +1,9 @@
 import pandas as pd
 import streamlit as st
 
-df = pd.read_csv("database_log_todo.csv")
+df = pd.read_csv("database_log_todo.csv",encoding="latin1",
+    sep=";",
+    on_bad_lines="skip")
 col1, col2 = st.columns([6,1])
 
 with col2:
