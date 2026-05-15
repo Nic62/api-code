@@ -16,7 +16,7 @@ st.logo("logo.png")
 #paginas
 st.page_link("site.py", label="Home", icon="📊")
 st.page_link("pages/sitepesquisa.py", label="Pesquisa", icon="🔎")
-st.page_link("pages/dashonline.py", label="Dashboard", icon="📈")
+
 
 #titulo
 st.markdown(
