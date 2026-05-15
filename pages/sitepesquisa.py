@@ -50,6 +50,7 @@ if termo:
                     st.subheader(item["MODELO"])
                     st.subheader(item["DESCRICAO"])
                     st.subheader(item["ESTACAO"])
+                    st.write(item["CONSUMO"])
                     st.write(item["SUB_GRUPO_1"])
                     st.write(item["SUB_GRUPO_2"])
                     st.write(item["CLASSIF"])
