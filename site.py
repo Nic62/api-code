@@ -10,7 +10,7 @@ with col2:
     st.image("logo.png", width=120)
 st.page_link("site.py", label="Home", icon="📊")
 st.page_link("pages/sitepesquisa.py", label="Pesquisa", icon="🔎")
-
+st.page_link("pages/flowrack.py", label="Pesquisa", icon="🔩")
 st.markdown(
     "<h1 style='text-align: center;'>API CODE</h1>",
     unsafe_allow_html=True
